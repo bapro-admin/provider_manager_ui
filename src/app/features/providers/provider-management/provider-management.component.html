@@ -1,0 +1,100 @@
+<div class="row mb-4 mt-1">
+    <div class="col-9 d-flex align-items-center">
+      <div class="daterangepicker-input-wrapper mr-3">
+        <input type="text"
+               ngxDaterangepickerBootstrap
+               [locale]="daterangepickerConfig.locale"
+               [(ngModel)]="selected"
+               class="daterangepicker-input"
+               placeholder="Seleccionar fecha"
+               (datesUpdated)="onDateChange($event)" />
+      </div>
+      @if(currentUser?.role == 'ADMIN'){
+        <mat-form-field appearance="outline" class="mr-2">
+            <mat-label>Operador</mat-label>
+            <mat-select [formControl]="operators" multiple>
+            <mat-option *ngFor="let operator of operatorsList" [value]="operator">{{operator}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+      }
+    </div>
+    <div class="col-3 d-flex align-items-center" [ngClass]="{ 'justify-content-between': currentUser?.role == 'ADMIN', 'justify-content-end': currentUser?.role != 'ADMIN'}">
+        <button mat-raised-button class="primary-button" (click)="addProvider()">Agregar Proveedor</button>
+        @if(currentUser?.role == 'ADMIN'){
+            <button mat-raised-button class="primary-button" (click)="exportProviders()">Exportar</button>
+        }
+        
+    </div>
+  </div>
+<section class="mb-5">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+        <ng-container matColumnDef="commertialName">
+            <th mat-header-cell *matHeaderCellDef> Nombre Comercial </th>
+            <td mat-cell *matCellDef="let element"> {{element.commercialName}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="bussinesName">
+            <th mat-header-cell *matHeaderCellDef> Razón Social </th>
+            <td mat-cell *matCellDef="let element"> {{element.businessName}} </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef> Teléfono </th>
+            <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="rfc">
+            <th mat-header-cell *matHeaderCellDef> RFC </th>
+            <td mat-cell *matCellDef="let element"> {{element.rfc}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef> Domicilio </th>
+            <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="sellerName">
+            <th mat-header-cell *matHeaderCellDef> Vendedor </th>
+            <td mat-cell *matCellDef="let element"> {{element.sellerFullName}} </td>
+        </ng-container>
+        
+        @if(currentUser?.role == 'ADMIN'){
+            <ng-container matColumnDef="operator" >
+                <th mat-header-cell *matHeaderCellDef> Operador </th>
+                <td mat-cell *matCellDef="let element"> {{element.operatorUsername}} </td>
+            </ng-container>
+        }
+        
+    
+        <ng-container matColumnDef="creationdate">
+            <th mat-header-cell *matHeaderCellDef> Fecha de Creación </th>
+            <td mat-cell *matCellDef="let element"> {{element.created_at | date: 'dd/MM/yyyy'}} </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon aria-hidden="false" aria-label="Delete user" fontIcon="edit" class="action-icon" (click)="editProvider(element)"></mat-icon>
+                <mat-icon aria-hidden="false" aria-label="Delete user" fontIcon="delete" class="action-icon" (click)="deleteProviderDialog(element.id_provider)"></mat-icon>
+            </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    @if(providersList.length > 0){
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+    }
+
+    @if(providersList.length <= 0){
+        <mat-card appearance="outlined" class="empty-records d-flex justify-content-center align-items-center" >
+            <mat-card-content>
+                <h3>
+                    <mat-icon aria-hidden="false" aria-label="Delete user" fontIcon="report" class="empty-records-icon"></mat-icon>
+                    No tienes proveedores registrados
+                </h3>
+            </mat-card-content>
+        </mat-card>
+    }
+    
+</section>

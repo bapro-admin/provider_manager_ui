@@ -1,0 +1,97 @@
+<h2 mat-dialog-title>
+    @if(data){
+        Actualizar proveedor
+    }
+    @if(!data){
+        Agregar proveedor
+    }
+    
+
+</h2>
+<mat-dialog-content>
+    <form [formGroup]="providerForm">
+        <div class="row mt-2">
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Nombre comercial</mat-label>
+                    <input matInput formControlName="commercialName" (blur)="onFieldBlur('commercialName')"/>
+                    @if(providerForm.get('commercialName')?.hasError('exists')){
+                        <mat-error>
+                            El nombre comercial ya existe.
+                        </mat-error>
+                    }
+                    @if(providerForm.get('commercialName')?.hasError('required')){
+                        <mat-error>
+                            El nombre comercial es obligatorio.
+                        </mat-error>
+                    }
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="full-width mt-2">
+                    <mat-label>Razón social</mat-label>
+                    <input matInput formControlName="businessName" (blur)="onFieldBlur('businessName')"/>
+                    @if(providerForm.get('businessName')?.hasError('required')){
+                        <mat-error>
+                            La razón social es obligatoria.
+                        </mat-error>
+                    }
+                    @if(providerForm.get('businessName')?.hasError('exists')){
+                        <mat-error>
+                            La razón social ya existe.
+                        </mat-error>
+                    }                    
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="full-width mt-2">
+                    <mat-label>RFC</mat-label>
+                    <input matInput formControlName="rfc" (blur)="onFieldBlur('rfc')"/>
+                    @if(providerForm.get('rfc')?.hasError('required')){
+                        <mat-error>
+                            La RFC es obligatorio
+                        </mat-error>
+                    }
+                    @if(providerForm.get('rfc')?.hasError('exists')){
+                        <mat-error>
+                            El RFC ya existe.
+                        </mat-error>
+                    }   
+                    @if(providerForm.get('rfc')?.touched && providerForm.get('rfc')?.hasError('pattern')){
+                        <mat-error>
+                            El RFC tiene un formato incorrecto. Asegúrate de ingresarlo correctamente.                        
+                        </mat-error>
+                    } 
+                    
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="full-width mt-2">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput formControlName="phone" />
+                    @if(providerForm.get('phone')?.hasError('pattern')){
+                        <mat-error>
+                            El teléfono solo puede contener números.
+                        </mat-error>
+                    }   
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="full-width mt-2">
+                    <mat-label>Dirección</mat-label>
+                    <input matInput formControlName="address" />
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-form-field appearance="outline" class="full-width mt-2">
+                    <mat-label>Nombre del vendedor</mat-label>
+                    <input matInput formControlName="sellerFullName" />
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close color="warn">Cancelar</button>
+    <button mat-button color="primary" [disabled]="providerForm.invalid" (click)="saveProviderData()">Guardar</button>
+</mat-dialog-actions>

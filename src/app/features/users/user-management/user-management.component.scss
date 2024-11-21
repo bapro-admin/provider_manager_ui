@@ -1,0 +1,24 @@
+table {
+    width: 100%;
+}
+
+.action-icon{
+    cursor: pointer;
+}
+
+.primary-button{
+    background-color: #212631 !important;
+    color: white !important;
+}
+
+.empty-records{
+    min-height: 150px;
+    border-radius: 0;
+}
+
+.empty-records-icon {
+    font-size: 36px; /* Cambia el tamaño del ícono */
+    height: 36px;
+    width: 36px;
+    line-height: 36px;
+  }
