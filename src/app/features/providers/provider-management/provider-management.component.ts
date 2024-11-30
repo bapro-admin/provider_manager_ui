@@ -58,7 +58,7 @@ export class ProviderManagementComponent {
   dataSource = new MatTableDataSource<Provider>();
   providersList: Provider[] = [];
   usersList: User[] = []
-  operators = new FormControl<string[]>([]);
+  operators = new FormControl<number[]>([]);
   operatorsList: any;
   currentUser: User | undefined;
   daterangepickerConfig = {
@@ -100,7 +100,7 @@ export class ProviderManagementComponent {
       this.displayedColumns =   ['commertialName', 'bussinesName', 'phone', 'rfc', 'address', 'sellerName', 'creationdate', 'actions'];
     }
     this.retrieveProvidersList()
-    this.operators.valueChanges.subscribe((selectedOperators: string[] | null) => {
+    this.operators.valueChanges.subscribe((selectedOperators: number[] | null) => {
       this.filterProvidersByOperators(selectedOperators);
     });
   }
@@ -111,7 +111,9 @@ export class ProviderManagementComponent {
   }
 
   addProvider(){
-    const dialogRef = this.dialog.open(ProviderMgmtDialogComponent, {});
+    const dialogRef = this.dialog.open(ProviderMgmtDialogComponent, {
+      height: '75vh'
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
@@ -123,6 +125,7 @@ export class ProviderManagementComponent {
 
   editProvider(provider: Provider){
     const dialogRef = this.dialog.open(ProviderMgmtDialogComponent, {
+      height: '75vh',
       data: provider
     });
 
@@ -184,10 +187,11 @@ export class ProviderManagementComponent {
   }
 
 
-  filterProvidersByOperators(selectedOperators: string[] | null) {
+  filterProvidersByOperators(selectedOperators: number[] | null) {
+    console.log('DATA', selectedOperators)
     if (selectedOperators && selectedOperators.length > 0) {
       const filteredData = this.providersList.filter(provider =>
-        selectedOperators.includes(provider.operatorUsername || '')
+        selectedOperators.includes(provider.operatorId || 0)
       );
       this.dataSource.data = filteredData;
     } else {
@@ -269,6 +273,8 @@ export class ProviderManagementComponent {
   retrieveUsersList(){
     this.usersServ.listUsers().subscribe((data: { users: any; })=>{
       this.usersList = data.users
+      //los operadores son todos los usuarios menos los admin, por eso filtramos la lista
+      this.operatorsList = this.usersList.filter(element => element.role !== 'ADMIN')
     },(error: { error: { error: { message: any; }; }; })=>{
       console.log('ERROR ON LIST USERS ', error)
       this.openSnackbar(`Ocurrio un error al obtener a los usuarios`, 'Ok')

@@ -2,6 +2,10 @@ table {
     width: 100%;
 }
 
+.custom-paginator {
+  width: 100% !important;
+}
+
 .action-icon{
     cursor: pointer;
 }
@@ -93,3 +97,34 @@ table {
   ::ng-deep .mat-form-field-wrapper{
     margin-bottom: -1.25em;
  }
+
+ .table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+mat-table {
+ width: 1200px;
+ max-width: 1200px;
+ margin-bottom: 1rem;
+ display: table;
+ border-collapse: collapse;
+ margin: 0px;
+}
+
+mat-row,
+mat-header-row {
+  display: table-row;
+}
+mat-cell,
+mat-header-cell {
+  word-wrap: initial;
+  display: table-cell;
+  padding: 0px 5px;
+  line-break: unset;
+  width: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: middle;
+}

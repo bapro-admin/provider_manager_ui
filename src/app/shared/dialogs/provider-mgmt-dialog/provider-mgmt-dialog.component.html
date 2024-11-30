@@ -5,9 +5,8 @@
     @if(!data){
         Agregar proveedor
     }
-    
-
 </h2>
+
 <mat-dialog-content>
     <form [formGroup]="providerForm">
         <div class="row mt-2">
@@ -57,7 +56,7 @@
                             El RFC ya existe.
                         </mat-error>
                     }   
-                    @if(providerForm.get('rfc')?.touched && providerForm.get('rfc')?.hasError('pattern')){
+                    @if(providerForm.get('rfc')?.hasError('pattern')){
                         <mat-error>
                             El RFC tiene un formato incorrecto. Asegúrate de ingresarlo correctamente.                        
                         </mat-error>
@@ -93,5 +92,5 @@
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-button mat-dialog-close color="warn">Cancelar</button>
-    <button mat-button color="primary" [disabled]="providerForm.invalid" (click)="saveProviderData()">Guardar</button>
+    <button mat-button color="primary" (click)="saveProviderData()">Guardar</button>
 </mat-dialog-actions>
