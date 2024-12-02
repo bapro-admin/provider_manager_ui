@@ -36,10 +36,16 @@
     constructor(private fb: FormBuilder, public providerServ: ProviderService) {
       this.providerForm = this.fb.group({
         id_provider: [null], // Este campo solo es útil para identificar al registro en edición
-        commercialName: ['', Validators.required],
-        businessName: ['', Validators.required],
+        commercialName: [
+          '', 
+          [Validators.required, Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/)]
+        ],
+        businessName: [
+          '', 
+          [Validators.required, Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/)]
+        ],
         phone: ['', [Validators.pattern('^[0-9]*$')]],
-        rfc: ['', [Validators.required, Validators.pattern(/^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{0,3}$/)]], // Nuevo regex actualizado
+        rfc: ['', [Validators.required]], // Nuevo regex actualizado
         address: [''],
         sellerFullName: ['']
       });
@@ -69,36 +75,54 @@
         const currentValue = control.value?.trim();
         const originalValue = this.originalValues[fieldName]?.trim();
     
+        console.log('currentValue', currentValue)
         // Marcamos el campo como tocado
         control.markAsTouched();
         control.markAsDirty();
     
         // Validación manual del formato de RFC
         const rfcRegex = /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{0,3}$/; // Nuevo regex actualizado
-        if (currentValue && !rfcRegex.test(currentValue)) {
-          control.setErrors({ ...control.errors, pattern: true });
-        } else {
-          // Eliminamos el error de patrón si el formato es válido
-          const errors = control.errors;
-          if (errors) {
-            delete errors['pattern'];
-            control.setErrors(Object.keys(errors).length > 0 ? errors : null);
+        // Validación de duplicidad: omitir si es RFC genérico
+        if (currentValue.toLowerCase() !== 'xxxxxxxxxxxxx') {
+          if (currentValue && !rfcRegex.test(currentValue)) {
+            control.setErrors({ ...control.errors, pattern: true });
+          } else {
+            // Eliminamos el error de patrón si el formato es válido
+            const errors = control.errors;
+            if (errors) {
+              delete errors['pattern'];
+              control.setErrors(Object.keys(errors).length > 0 ? errors : null);
+            }
           }
         }
+       
     
-        // Validación de existencia si el valor cambió
+         // Validación de duplicidad: omitir si es RFC genérico
+         if (currentValue.toLowerCase() !== 'xxxxxxxxxxxxx') {
+            // Validación de existencia si el valor cambió
+            if (currentValue !== originalValue) {
+              this.checkIfFieldExists(fieldName, currentValue);
+            }
+        }
+    
+      }else if (control){
+        const currentValue = control.value?.trim();
+        const originalValue = this.originalValues[fieldName]?.trim();
+
         if (currentValue !== originalValue) {
           this.checkIfFieldExists(fieldName, currentValue);
         }
       }
+
     }
+    
     
 
     checkIfFieldExists(field: string, value: string) {
       const fixedValue = value.trim();
       const criteria: Record<string, any> = { field, value: fixedValue };
-    
-      // Si estamos editando, incluir el ID del proveedor
+      if(fixedValue !== ''){
+        // Si estamos editando, incluir el ID del proveedor
       if (this.providerForm.get('id')?.value) {
         criteria['excludeId'] = this.providerForm.get('id')?.value; // ID a excluir de la validación
       }
@@ -112,6 +136,7 @@
           console.error('ERROR ON LIST PROVIDERS', error);
         }
       );
+      }
     }
     
 

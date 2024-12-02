@@ -24,6 +24,11 @@
                             El nombre comercial es obligatorio.
                         </mat-error>
                     }
+                    @if(providerForm.get('commercialName')?.hasError('pattern')){
+                        <mat-error>
+                            El nombre comercial solo puede contener letras, números y espacios.
+                        </mat-error>
+                    }
                 </mat-form-field>
             </div>
             <div class="col-12">
@@ -39,7 +44,12 @@
                         <mat-error>
                             La razón social ya existe.
                         </mat-error>
-                    }                    
+                    }         
+                    @if(providerForm.get('businessName')?.hasError('pattern')){
+                        <mat-error>
+                            El nombre comercial solo puede contener letras, números y espacios.
+                        </mat-error>
+                    }           
                 </mat-form-field>
             </div>
             <div class="col-12">
