@@ -75,7 +75,6 @@
         const currentValue = control.value?.trim();
         const originalValue = this.originalValues[fieldName]?.trim();
     
-        console.log('currentValue', currentValue)
         // Marcamos el campo como tocado
         control.markAsTouched();
         control.markAsDirty();
@@ -169,13 +168,23 @@
 
     saveProviderData(): void {
       // Forzar validaciones en todos los campos
-      Object.keys(this.providerForm.controls).forEach(field => {
-        const control = this.providerForm.get(field);
-        if (control) {
-          control.markAsTouched(); // Marca el control como tocado
-          control.updateValueAndValidity(); // Fuerza la validación
+      this.providerForm.markAllAsTouched()
+
+      // Validación manual del RFC
+      const rfcControl = this.providerForm.get('rfc');
+      const rfcRegex = /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{0,3}$/;
+      const rfcValue = rfcControl?.value?.trim();
+      // Si el RFC no es genérico y no cumple con el formato, marcamos un error
+      if (rfcControl && rfcValue.toLowerCase() !== 'xxxxxxxxxxxxx' && !rfcRegex.test(rfcValue)) {
+        rfcControl.setErrors({ ...rfcControl.errors, pattern: true });
+      } else {
+        // Si el RFC es válido, eliminamos el error de patrón si existe
+        if (rfcControl && rfcControl.errors) {
+          const errors = rfcControl.errors;
+          delete errors['pattern'];
+          rfcControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
         }
-      });
+      }
     
       // Verificar si el formulario es válido
       if (this.providerForm.invalid) {
