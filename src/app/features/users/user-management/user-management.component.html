@@ -20,7 +20,8 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
         <td mat-cell *matCellDef="let element">
-            <mat-icon aria-hidden="false" aria-label="Delete user" fontIcon="delete" class="action-icon" (click)="deleteUserDialog(element.id_user)"></mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Delete user" fontIcon="edit" class="action-icon" (click)="editUser(element)"></mat-icon>
+          <mat-icon aria-hidden="false" aria-label="Delete user" fontIcon="delete" class="action-icon" (click)="deleteUserDialog(element.id_user)"></mat-icon>
         </td>
       </ng-container>
   

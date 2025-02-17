@@ -6,11 +6,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../../../core/services/user.service';
-import { User } from 'src/app/core/models/user.model';
 import { ConfirmDialogComponent } from '../../../shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { UserMgmtDialogComponent } from '../../../shared/dialogs/user-mgmt-dialog/user-mgmt-dialog.component';
 import { SessionStorageService } from '../../../core/services/session-storage.service';
 import { MatCardModule } from '@angular/material/card';
+import { User } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-user-management',
@@ -31,7 +31,7 @@ export class UserManagementComponent {
   usersList: User[] = [];
   currentUser: string = '';
   registeredUsersCount = 0;
-  maxUsers = 20; // Límite de usuarios
+  maxUsers = 40; // Límite de usuarios
 
   constructor(
     public userServ: UserService,
@@ -69,6 +69,29 @@ export class UserManagementComponent {
       }
     });
   }
+
+  editUser(user: User){
+      const dialogRef = this.dialog.open(UserMgmtDialogComponent, {
+        data: user
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if(result){
+          const updatedUser = result as User
+          const passwordUpdate = { password : updatedUser.password }
+          this.userServ.updateUser(user.id_user, passwordUpdate).subscribe(
+            () => {
+              this.openSnackbar(`Se actualizó el usuario correctamente`, 'Ok');
+              this.retrieveUsers();
+            },
+            (error: { error: { error: { message: any } } }) => {
+              console.log('ERROR ON UPDATE USER ', error);
+              this.openSnackbar(`Ocurrió un error al actualizar el usuario`, 'Ok');
+            } 
+          )
+        }
+      });
+    }
 
   deleteUserDialog(uid: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {

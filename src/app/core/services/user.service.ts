@@ -35,7 +35,7 @@ export class UserService {
         );
     }
     
-    updateUser(id: any, user: User){
+    updateUser(id: any, user: any){
         return this.http.put(`${API_PATH}/users/${id}`, user, httpOptions);
     }
 
